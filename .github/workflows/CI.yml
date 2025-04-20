@@ -99,7 +99,7 @@ jobs:
       #      console.log('environment:', process.versions);
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
         with:
           files: |
             releases/linux/*
@@ -189,7 +189,7 @@ jobs:
       #      console.log('environment:', process.versions);
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
         with:
           files: |
             releases/macos/*
@@ -270,7 +270,7 @@ jobs:
           fi
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
         with:
           files: |
             releases/windows/*
@@ -294,7 +294,7 @@ jobs:
           scripts/build-pi.sh
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
         with:
           files: |
             releases/pi/*
