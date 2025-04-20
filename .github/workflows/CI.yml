@@ -300,11 +300,8 @@ jobs:
           PRODUCT_NAME=gSender
           PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
           PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-          mkdir -p releases/pi
-          ls -al output
-          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/pi/gSender-${PACKAGE_VERSION}-RaspberryPi-32Bit.AppImage"
-          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-armv7l.deb" "releases/pi/gSender-${PACKAGE_VERSION}-RaspberryPi-32Bit.deb"
-          ls -al output releases/pi
+          ls -al releases/pi || echo "No releases/pi directory found"
+          ls -al releases/pi/* || echo "No files found in releases/pi"
           if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
             yarn github-release delete \
               --owner=gSender \
