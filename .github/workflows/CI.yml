@@ -90,13 +90,11 @@ jobs:
               --body="${GIT_COMMIT_LOG}" \
               releases/linux/*;
           fi
-      #- name: Upload release assets
-      #  uses: actions/github-script@v6
-      #  with:
-      #    github-token: ${{ secrets.GITHUB_TOKEN }}
-      #    script: |
-      #      // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
-      #      console.log('environment:', process.versions);
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsender-linux-artifacts
+          path: releases/linux/*
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
@@ -180,13 +178,11 @@ jobs:
               --body="${GIT_COMMIT_LOG}" \
               releases/macos/*;
           fi
-      #- name: Upload release assets
-      #  uses: actions/github-script@v6
-      #  with:
-      #    github-token: ${{ secrets.GITHUB_TOKEN }}
-      #    script: |
-      #      // https://github.com/actions/upload-release-asset/issues/47#issuecomment-659071145
-      #      console.log('environment:', process.versions);
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsender-macos-artifacts
+          path: releases/macos/*
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
@@ -268,6 +264,11 @@ jobs:
               --body="${GIT_COMMIT_LOG}" \
               releases/windows/*;
           fi
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsender-windows-artifacts
+          path: releases/windows/*
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
@@ -292,6 +293,38 @@ jobs:
         shell: bash
         run: |
           scripts/build-pi.sh
+      - name: Prepare release assets
+        shell: bash
+        run: |
+          GIT_COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+          PRODUCT_NAME=gSender
+          PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+          PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+          mkdir -p releases/pi
+          ls -al output
+          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-armv7l.AppImage" "releases/pi/gSender-${PACKAGE_VERSION}-RaspberryPi-32Bit.AppImage"
+          cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-armv7l.deb" "releases/pi/gSender-${PACKAGE_VERSION}-RaspberryPi-32Bit.deb"
+          ls -al output releases/pi
+          if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "master" ]]; then
+            yarn github-release delete \
+              --owner=gSender \
+              --repo=gsender \
+              --tag="${GITHUB_REF_NAME}-latest" \
+              --release-name="${GITHUB_REF_NAME}" \
+              "*-pi*";
+            yarn github-release upload \
+              --owner=gSender \
+              --repo=gsender \
+              --tag="${GITHUB_REF_NAME}-latest" \
+              --release-name="${GITHUB_REF_NAME}" \
+              --body="${GIT_COMMIT_LOG}" \
+              releases/pi/*;
+          fi
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsender-pi-artifacts
+          path: releases/pi/*
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/CI_update'
