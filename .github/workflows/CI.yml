@@ -61,7 +61,7 @@ jobs:
       - name: Build Linux binaries
         run: |
           yarn run build:linux
-      - name: Debug: List all files after build
+      - name: "Debug: List all files after build"
         run: find . -type f | sort
       - name: Prepare release assets
         shell: bash
@@ -154,7 +154,7 @@ jobs:
         run: yarn run build-latest
       - name: Build macOS binaries
         run: yarn run build:macos
-      - name: Debug: List all files after build
+      - name: "Debug: List all files after build"
         run: find . -type f | sort
       - name: Prepare release assets
         shell: bash
@@ -242,7 +242,7 @@ jobs:
         run: yarn run build-latest
       - name: Build Windows binaries
         run: yarn run build:windows
-      - name: Debug: List all files after build
+      - name: "Debug: List all files after build"
         run: find . -type f | sort
       - name: Prepare release assets
         shell: bash
@@ -299,7 +299,7 @@ jobs:
         shell: bash
         run: |
           scripts/build-pi.sh
-      - name: Debug: List all files after build
+      - name: "Debug: List all files after build"
         run: find . -type f | sort
       - name: Prepare release assets
         shell: bash
